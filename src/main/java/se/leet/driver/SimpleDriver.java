@@ -13,16 +13,16 @@ class SimpleDriver implements Driver {
     Set<String> collectedPages = new HashSet<>();
 
     @Override
-    public void search(String domain, String startPage, Consumer<Page> pageFound) {
+    public void search(String startPage, Consumer<Page> pageFound) {
         // Add start page to initial set.
         foundPages.add(startPage);
         var nextPage = getNextPage();
 
         while (nextPage.isPresent()) {
             // Fetch the next page.
-            Page result = Page.build(domain, nextPage.get());
-            System.out.println("FOUND PAGE: " + result.getPath());
-            collectedPages.add(result.getPath());
+            Page result = Page.build(nextPage.get());
+            System.out.println("FOUND PAGE: " + result.getUrl());
+            collectedPages.add(result.getUrl());
 
             // Add any links to pages to be collected.
             foundPages.addAll(result.getPageLinks());

@@ -13,13 +13,13 @@ public class RunnerImpl implements Runner {
     }
 
     @Override
-    public void run(String domain, String startPage) {
+    public void run(String startPage) {
         var driver = DriverFactory.build(driverType);
-        driver.search(domain, startPage, this::pageFound);
+        driver.search(startPage, this::pageFound);
     }
 
     private void pageFound(Page page) {
         // TODO: 2023-01-26 Save pages for real.
-        System.out.println("SAVING PAGE: " + page.getPath());
+        System.out.println("SAVING PAGE: " + page.getUrl());
     }
 }

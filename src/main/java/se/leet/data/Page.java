@@ -7,24 +7,24 @@ import java.util.Collection;
 public class Page {
 
     private final Document page;
-    private final String path;
+    private final String url;
 
-    private Page(Document page, String path) {
+    private Page(Document page, String url) {
         this.page = page;
-        this.path = path;
+        this.url = url;
     }
 
-    public static Page build(String domain, String path) {
-        Document page = JsoupUtil.getPage(domain, path);
-        return new Page(page, path);
+    public static Page build(String url) {
+        Document page = JsoupUtil.getPage(url);
+        return new Page(page, url);
     }
 
     public String getData() {
         return page.data();
     }
 
-    public String getPath() {
-        return path;
+    public String getUrl() {
+        return url;
     }
 
     public Collection<String> getPageLinks() {
