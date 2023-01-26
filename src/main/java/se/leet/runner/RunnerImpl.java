@@ -19,7 +19,7 @@ public class RunnerImpl implements Runner {
     }
 
     private void pageFound(Page page) {
-        System.out.println("FOUND page " + page.getPath());
-        System.out.println("TODO: write file to " + page.getPath());
+        // TODO: 2023-01-26 Save pages for real.
+        System.out.println("SAVING PAGE: " + page.getPath());
     }
 }

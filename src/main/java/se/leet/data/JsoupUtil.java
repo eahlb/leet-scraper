@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 class JsoupUtil {
 
@@ -23,10 +24,12 @@ class JsoupUtil {
     }
 
     static Set<String> getLinks(Document page) {
-        var result = new HashSet<String>();
-        result.addAll(page.getElementsByTag("a").eachAttr("href"));
-        result.addAll(page.getElementsByTag("link").eachAttr("href"));
-        return result;
+        // TODO: 2023-01-26 Handle all link tags.
+        var result = new HashSet<>(page.getElementsByTag("a").eachAttr("href"));
+        // TODO: 2023-01-26 Handle all references.
+        return result.stream()
+                .filter(s -> s.startsWith("catalogue"))
+                .collect(Collectors.toSet());
     }
 
     static Set<String> getResources(Document page) {
