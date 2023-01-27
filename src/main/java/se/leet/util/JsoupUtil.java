@@ -1,4 +1,4 @@
-package se.leet.data;
+package se.leet.util;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-class JsoupUtil {
+public class JsoupUtil {
 
-    static Document getPage(String url) {
+    public static Document getPage(String url) {
         Connection connection = Jsoup.connect(url);
         try {
             return connection.get();
@@ -19,11 +19,20 @@ class JsoupUtil {
         }
     }
 
-    static Set<String> getLinks(Document page) {
+    public static byte[] getData(String url) {
+        Connection connection = Jsoup.connect(url).ignoreContentType(true);
+        try {
+            return connection.execute().bodyAsBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Set<String> getLinks(Document page) {
         return new HashSet<>(page.getElementsByTag("a").eachAttr("abs:href"));
     }
 
-    static Set<String> getResources(Document page) {
+    public static Set<String> getResources(Document page) {
         // TODO: 2023-01-27 Add style sheets
         return new HashSet<>(page.getElementsByTag("img").eachAttr("abs:src"));
     }

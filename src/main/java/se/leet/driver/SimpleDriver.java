@@ -1,7 +1,9 @@
 package se.leet.driver;
 
 import se.leet.data.Page;
+import se.leet.data.Result;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -13,24 +15,24 @@ class SimpleDriver implements Driver {
     Set<String> collectedPages = new HashSet<>();
 
     @Override
-    public void search(String startPage, Consumer<Page> pageFound) {
+    public void search(String startPage, Consumer<Result> pageFound) {
         // Add start page to initial set.
         foundPages.add(startPage);
         var nextPage = getNextPage();
 
         while (nextPage.isPresent()) {
             // Fetch the next page.
-            Page result = Page.build(nextPage.get());
-            System.out.println("FOUND PAGE: " + result.getUrl());
-            collectedPages.add(result.getUrl());
+            Page page = Page.build(nextPage.get());
+            System.out.println("FOUND PAGE: " + page.getUrl());
+            collectedPages.add(page.getUrl());
 
             // Add any links to pages to be collected.
-            foundPages.addAll(result.getPageLinks());
+            foundPages.addAll(page.getPageLinks());
 
             // TODO: 2023-01-26 Get all non-page resources.
 
             // Trigger page found callback.
-            pageFound.accept(result);
+            pageFound.accept(new Result(page.getUrl(), page.getData().getBytes(StandardCharsets.UTF_8)));
 
             // Get the next page to fetch.
             nextPage = getNextPage();

@@ -1,6 +1,7 @@
 package se.leet.data;
 
 import org.jsoup.nodes.Document;
+import se.leet.util.JsoupUtil;
 
 import java.util.Collection;
 

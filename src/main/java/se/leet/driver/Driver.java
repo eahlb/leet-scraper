@@ -1,9 +1,9 @@
 package se.leet.driver;
 
-import se.leet.data.Page;
+import se.leet.data.Result;
 
 import java.util.function.Consumer;
 
 public interface Driver {
-    void search(String url, Consumer<Page> pageFound);
+    void search(String url, Consumer<Result> pageFound);
 }
