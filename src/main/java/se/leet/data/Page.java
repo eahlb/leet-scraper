@@ -20,7 +20,7 @@ public class Page {
     }
 
     public String getData() {
-        return page.data();
+        return page.toString();
     }
 
     public String getUrl() {

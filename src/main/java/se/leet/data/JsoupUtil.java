@@ -20,11 +20,11 @@ class JsoupUtil {
     }
 
     static Set<String> getLinks(Document page) {
-        // TODO: 2023-01-26 Handle all link tags.
         return new HashSet<>(page.getElementsByTag("a").eachAttr("abs:href"));
     }
 
     static Set<String> getResources(Document page) {
+        // TODO: 2023-01-27 Add style sheets
         return new HashSet<>(page.getElementsByTag("img").eachAttr("abs:src"));
     }
 }
