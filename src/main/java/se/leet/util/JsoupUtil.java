@@ -34,6 +34,9 @@ public class JsoupUtil {
 
     public static Set<String> getResources(Document page) {
         // TODO: 2023-01-27 Add style sheets
-        return new HashSet<>(page.getElementsByTag("img").eachAttr("abs:src"));
+        Set<String> result = new HashSet<>();
+        result.addAll(page.getElementsByTag("img").eachAttr("abs:src"));
+        result.addAll(page.getElementsByTag("link").eachAttr("abs:href"));
+        return result;
     }
 }
