@@ -1,9 +1,9 @@
 package se.leet.driver;
 
-import se.leet.data.Page;
-import se.leet.data.Result;
+import se.leet.connection.Connection;
+import se.leet.connection.PageConnection;
+import se.leet.model.Result;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -11,37 +11,37 @@ import java.util.function.Consumer;
 
 class SimpleDriver implements Driver {
 
-    Set<String> foundPages = new HashSet<>();
+    Set<Connection> foundPages = new HashSet<>();
     Set<String> collectedPages = new HashSet<>();
 
     @Override
-    public void search(String startPage, Consumer<Result> pageFound) {
+    public void search(String startPage, Consumer<Result> callback) {
         // Add start page to initial set.
-        foundPages.add(startPage);
-        var nextPage = getNextPage();
+        PageConnection firstConnection = new PageConnection(startPage);
+        foundPages.add(firstConnection);
+        var nextPage = getNextConnection();
 
         while (nextPage.isPresent()) {
             // Fetch the next page.
-            Page page = Page.build(nextPage.get());
-            System.out.println("FOUND PAGE: " + page.getUrl());
-            collectedPages.add(page.getUrl());
+            Connection connection = nextPage.get();
+            Connection.Data data = connection.connect();
+            String url = connection.getUrl();
+            collectedPages.add(url);
 
             // Add any links to pages to be collected.
-            foundPages.addAll(page.getPageLinks());
-
-            // TODO: 2023-01-26 Get all non-page resources.
+            data.getLinks().forEach(foundPages::add);
 
             // Trigger page found callback.
-            pageFound.accept(new Result(page.getUrl(), page.getData().getBytes(StandardCharsets.UTF_8)));
+            callback.accept(new Result(url, data.getData()));
 
             // Get the next page to fetch.
-            nextPage = getNextPage();
+            nextPage = getNextConnection();
         }
     }
 
-    private Optional<String> getNextPage() {
+    private Optional<Connection> getNextConnection() {
         return foundPages.stream()
-                .filter(s -> !collectedPages.contains(s))
+                .filter(c -> !collectedPages.contains(c.getUrl()))
                 .findFirst();
     }
 }

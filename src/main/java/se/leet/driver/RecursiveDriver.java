@@ -1,43 +1,35 @@
 package se.leet.driver;
 
-import se.leet.data.Page;
-import se.leet.data.Result;
-import se.leet.util.JsoupUtil;
+import se.leet.connection.Connection;
+import se.leet.connection.PageConnection;
+import se.leet.model.Result;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class RecursiveDriver implements Driver {
 
     Set<String> searchedPages = new HashSet<>();
-    Set<String> collectedResources = new HashSet<>();
 
     @Override
-    public void search(String url, Consumer<Result> pageFound) {
+    public void search(String url, Consumer<Result> callback) {
+        PageConnection firstConnection = new PageConnection(url);
+        search(firstConnection, callback);
+    }
+
+    private void search(Connection connection, Consumer<Result> callback) {
+        String url = connection.getUrl();
         if (searchedPages.contains(url)) {
             // Page has already been collected.
             return;
-        } else {
-            // Add page to searched pages.
-            searchedPages.add(url);
         }
         // Get the page.
-        Page page = Page.build(url);
+        Connection.Data data = connection.connect();
+        searchedPages.add(url);
         // Trigger callback.
-        pageFound.accept(new Result(page.getUrl(), page.getData().getBytes(StandardCharsets.UTF_8)));
+        callback.accept(new Result(url, data.getData()));
         // Get all linked pages.
-        page.getPageLinks().forEach(link -> search(link, pageFound));
-
-        // Get all un-collected linked resources.
-        page.getResourceLinks().stream()
-                .filter(Predicate.not(collectedResources::contains))
-                .forEach(link -> {
-                    collectedResources.add(link);
-                    byte[] data = JsoupUtil.getData(link);
-                    pageFound.accept(new Result(link, data));
-                });
+        data.getLinks().forEach(link -> search(link, callback));
     }
 }

@@ -1,17 +1,19 @@
-package se.leet.util;
+package se.leet.runner;
+
+import se.leet.output.OutputHandler;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class FileUtil {
+class FileUtil {
 
     public static void createFile(String url, byte[] data) {
         String fileName = System.getProperty("user.home")
                 + File.separatorChar
                 + url.substring(7).replace('/', File.separatorChar);
-        System.out.println("SAVING PAGE: " + fileName);
+        OutputHandler.log("SAVING", fileName);
 
         var file = new File(fileName);
         try {

@@ -1,4 +1,4 @@
-package se.leet.util;
+package se.leet.connection;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class JsoupUtil {
+class JsoupUtil {
 
     public static Document getPage(String url) {
         Connection connection = Jsoup.connect(url);
