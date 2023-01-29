@@ -13,7 +13,9 @@ public class RunnerImpl implements Runner {
 
     @Override
     public void run(String startPage) {
+        // Get the driver.
         var driver = DriverFactory.build(driverType);
-        driver.search(startPage, result -> FileUtil.createFile(result.fileName(), result.data()));
+        // Start the crawl creating file on page found.
+        driver.crawl(startPage, result -> FileUtil.createFile(result.fileName(), result.data()));
     }
 }

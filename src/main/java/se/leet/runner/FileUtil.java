@@ -10,11 +10,13 @@ import java.nio.file.Paths;
 class FileUtil {
 
     public static void createFile(String url, byte[] data) {
+        // Build the file name, making some assumptions on url structure.
         String fileName = System.getProperty("user.home")
                 + File.separatorChar
                 + url.substring(7).replace('/', File.separatorChar);
         OutputHandler.log("SAVING", fileName);
 
+        // Create file, and if necessary directory.
         var file = new File(fileName);
         try {
             Files.createDirectories(Paths.get(file.getParentFile().getAbsolutePath()));

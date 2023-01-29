@@ -8,12 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class RecursiveDriver implements Driver {
+class RecursiveDriver implements Driver {
 
     Set<String> searchedPages = new HashSet<>();
 
     @Override
-    public void search(String url, Consumer<Result> callback) {
+    public void crawl(String url, Consumer<Result> callback) {
         PageConnection firstConnection = new PageConnection(url);
         search(firstConnection, callback);
     }

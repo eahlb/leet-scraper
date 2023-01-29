@@ -15,12 +15,12 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class ParallelDriver implements Driver {
+class ParallelDriver implements Driver {
 
     Set<String> searchedPages = Collections.synchronizedSet(new HashSet<>());
 
     @Override
-    public void search(String url, Consumer<Result> callback) {
+    public void crawl(String url, Consumer<Result> callback) {
         try (ExecutorService executorService = Executors.newFixedThreadPool(10)) {
             PageConnection firstConnection = new PageConnection(url);
             composePageCollectors(Stream.of(firstConnection), callback, executorService)
@@ -31,16 +31,23 @@ public class ParallelDriver implements Driver {
     }
 
     private CompletableFuture<Void> composePageCollectors(Stream<Connection> connections, Consumer<Result> callback, ExecutorService executorService) {
+        // Collect data and links for each connection.
         CompletableFuture<?>[] linkedFutures = connections
-                .map(connection -> CompletableFuture.supplyAsync(new PageCollector(connection, callback), executorService)
+                .map(connection -> CompletableFuture
+                        // Collect page date.
+                        .supplyAsync(new PageCollector(connection, callback), executorService)
+                        // Compose page collectors on found links.
                         .thenComposeAsync(c -> composePageCollectors(c, callback, executorService), executorService)
-                ).toArray(CompletableFuture[]::new);
+                )
+                .toArray(CompletableFuture[]::new);
+        // Merge futures and return.
         return CompletableFuture.allOf(linkedFutures);
 
     }
 
     /**
      * Collects a page and supplies all linked objects by that page.
+     * Implemented as a supplier to harmonize with CompletableFuture API.
      */
     private class PageCollector implements Supplier<Stream<Connection>> {
 

@@ -15,7 +15,7 @@ class SimpleDriver implements Driver {
     Set<String> collectedPages = new HashSet<>();
 
     @Override
-    public void search(String startPage, Consumer<Result> callback) {
+    public void crawl(String startPage, Consumer<Result> callback) {
         // Add start page to initial set.
         PageConnection firstConnection = new PageConnection(startPage);
         foundPages.add(firstConnection);

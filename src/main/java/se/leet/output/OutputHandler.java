@@ -1,6 +1,7 @@
 package se.leet.output;
 
 public class OutputHandler {
+    // Note: as simple as possible, don't judge too harshly.
 
     private static boolean enabled = true;
 
